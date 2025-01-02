@@ -1,0 +1,15 @@
+pip install Flask
+pip install flask-mysql
+pip install flask-mysqldb
+pip install flask-login
+pip install Flask Flask-SQLAlchemy 
+Flask-Login 
+Flask-Bcrypt
+pip install Flask-SQLAlchemy pymysql
+pip install Flask Flask-SQLAlchemy Flask-Login Flask-Bcrypt mysql-connector-python
+pip install Flask-Session
+pip install flask flask-sqlalchemy flask-login pymysql werkzeug
+pip install Flask-Migrate
+pip install --upgrade werkzeug
+pip install python-dotenv
+
