@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db
 from models.user import User
-from . import user_bp  # Import the user blueprint
+from . import user_bp  # Importa el blueprint de el modelo User
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -13,7 +13,11 @@ def register():
         password = request.form['password']
 
         if User.query.filter_by(email=email).first():
-            flash('Email already exists.')
+            flash('Correo Ya Existe.')
+            return redirect(url_for('user.register'))
+        
+        if User.query.filter_by(username=username).first():
+            flash('Usuario ya Existe .')
             return redirect(url_for('user.register'))
 
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
@@ -22,7 +26,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Account created successfully!')
+        flash('Usuario Creado!')
         return redirect(url_for('user.login'))
 
     return render_template('auth/register.html')
@@ -36,11 +40,11 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if not user or not check_password_hash(user.password, password):
-            flash('Invalid email or password.')
+            flash('Correo o password invalido.')
             return redirect(url_for('user.login'))
 
         login_user(user)
-        flash('Logged in successfully!')
+        #flash('Logged in successfully!')
         return redirect(url_for('user.dashboard'))
 
     return render_template('auth/login.html')
@@ -49,7 +53,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('Logged out successfully!')
+    #flash('Logged out successfully!')
     return redirect(url_for('user.login'))
 
 @user_bp.route('/dashboard')

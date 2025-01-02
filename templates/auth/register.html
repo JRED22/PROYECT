@@ -1,22 +1,52 @@
-<!-- register.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-</head>
-<body>
-    <h1>Register</h1>
-    <form method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <button type="submit">Register</button>
+     
+{% extends './base.html' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+
+    {% block body %}
+ <main class="form-signin w-100 m-auto mt-4">
+    <form class="form-signin"  method="POST">
+        <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="200" height="100">     
+        {% with messages = get_flashed_messages() %}
+    
+        {% if messages %}
+        <br />
+        {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    
+        {% endwith %}
+        <h1 class="h3 mb-3 fw-normal">Ingesa </h1>
+        
+        <div class="form-floating">
+            <input type="text"class="form-control"  id="username" name="username"required placeholder="Digite Username">
+            <label for="username">Username:</label>
+        </div>
+        <div class="form-floating mt-2">
+            <input type="email"class="form-control" id="email" name="email" required placeholder="Digite Email">
+            <label for="email">Email:</label>
+            
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="password" name="password" required placeholder="Password">
+            <label for="password">Password</label>
+        </div>
+        <button class="w-100 btn btn-Small btn-primary" type="submit">Registrate</button>
     </form>
-    <a href="{{ url_for('user.login') }}">Already have an account? Login here</a>
-</body>
-</html>
+        <div class="form-floating">
+          <a href="{{ url_for('user.login') }}">Already have an account? Login here</a>
+       </div>
+</main>
+     {% endblock %}
+
+
+     

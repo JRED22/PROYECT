@@ -1,20 +1,49 @@
-<!-- login.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
+{% extends './base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+
     <h1>Login</h1>
-    <form method="POST">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <button type="submit">Login</button>
+  
+    {% block body %}
+ <main class="form-signin w-100 m-auto mt-4">
+    <form class="form-signin"  method="POST">
+        <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="200" height="100">     
+        {% with messages = get_flashed_messages() %}
+    
+        {% if messages %}
+        <br />
+        {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    
+        {% endwith %}
+        <h1 class="h3 mb-3 fw-normal">Ingesa </h1>
+        
+        <div class="form-floating">
+            <input type="email"class="form-control form-control-sm" type="email" id="email" name="email" required placeholder="Digite Email">
+            <label for="email">Email:</label>
+        </div>
+        <div class="form-floating mt-2">
+            <input type="password" class="form-control" id="password" name="password" required placeholder="Password">
+            <label for="password">Password</label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
     </form>
-    <a href="{{ url_for('user.register') }}">Don't have an account? Register here</a>
-</body>
-</html>
+        <div class="form-floating">
+          <a href="{{ url_for('user.register') }}">No estas Registrado? Registrate Aqui.</a>
+       </div>
+
+</main>
+     {% endblock %}
+
+
+     
