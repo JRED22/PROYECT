@@ -6,3 +6,6 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    confirmation_code = db.Column(db.String(6), nullable=True)
+    is_confirmed = db.Column(db.Boolean, default=False)
+    confirmation_time = db.Column(db.DateTime, nullable=True)  # Para almacenar el tiempo de confirmación

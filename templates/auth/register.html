@@ -11,6 +11,7 @@
     {% block body %}
  <main class="form-signin w-100 m-auto mt-4">
     <form class="form-signin"  method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><!-- Incluye el token CSRF -->
         <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="200" height="100">     
         {% with messages = get_flashed_messages() %}
     

@@ -4,6 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db
 from models.user import User
 from . import user_bp  # Importa el blueprint de el modelo User
+import random
+import string
+from datetime import datetime
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -11,7 +14,7 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-
+    try:
         if User.query.filter_by(email=email).first():
             flash('Correo Ya Existe.')
             return redirect(url_for('user.register'))
@@ -19,24 +22,26 @@ def register():
         if User.query.filter_by(username=username).first():
             flash('Usuario ya Existe .')
             return redirect(url_for('user.register'))
-
+        confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(username=username, email=email, password=hashed_password)
-
+        new_user = User(username=username, email=email, password=hashed_password,confirmation_code=confirmation_code, confirmation_time=datetime.now())
         db.session.add(new_user)
         db.session.commit()
-
         flash('Usuario Creado!')
         return redirect(url_for('user.login'))
-
+    except Exception as e:
+            db.session.rollback()  # Deshacer la sesión en caso de error
+            flash('Ocurrió un error al crear el usuario. Inténtalo de nuevo.')
+            print(f'Error: {e}')  # Imprimir el error en la consola para depuración
     return render_template('auth/register.html')
+ 
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
+    try:
         user = User.query.filter_by(email=email).first()
 
         if not user or not check_password_hash(user.password, password):
@@ -46,8 +51,10 @@ def login():
         login_user(user)
         #flash('Logged in successfully!')
         return redirect(url_for('user.dashboard'))
-
-    return render_template('auth/login.html')
+    except Exception as e:
+       flash('Ocurrió un error al intentar iniciar sesión. Inténtalo de nuevo.')
+       print(f'Error: {e}')  # Imprimir el error en la consola para depuración 
+       return render_template('auth/login.html')
 
 @user_bp.route('/logout')
 @login_required

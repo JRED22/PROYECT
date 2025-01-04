@@ -1,20 +1,23 @@
-<!-- home.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
-    <h1>Welcome to the Flask App</h1>
+{% extends './base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+
+    <h1>Home</h1>
+  
+    {% block body %}
+    <h1>Bienvenido a esta app flask </h1>
     {% if user.is_authenticated %}
         <p>Hello, {{ user.username }}!</p>
-        <a href="{{ url_for('user.dashboard') }}">Go to Dashboard</a>
-        <a href="{{ url_for('user.logout') }}">Logout</a>
+        <a  class="btn btn-secondary" href="{{ url_for('user.dashboard') }}">Go to Dashboard</a>
+        <a  class="btn btn-secondary" href="{{ url_for('user.logout') }}">Logout</a>
     {% else %}
-        <a href="{{ url_for('user.login') }}">Login</a>
-        <a href="{{ url_for('user.register') }}">Register</a>
+        <a  class="btn btn-secondary" href="{{ url_for('user.login') }}">Login</a>
+        <a  class="btn btn-secondary" href="{{ url_for('user.register') }}">Register</a>
     {% endif %}
-</body>
-</html>
+    
+    {% endblock %}

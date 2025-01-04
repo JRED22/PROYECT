@@ -12,4 +12,5 @@ pip install flask flask-sqlalchemy flask-login pymysql werkzeug
 pip install Flask-Migrate
 pip install --upgrade werkzeug
 pip install python-dotenv
+pip install Flask-Mail
 
