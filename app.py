@@ -1,30 +1,28 @@
 from flask import Flask,render_template
 from flask_login import  current_user
 from dotenv import load_dotenv
-import os
 from flask_wtf.csrf import CSRFProtect
 from models import db
 from flask_migrate import Migrate
 from models.user import User
 from flask_login import LoginManager
 from routes import user_bp  # Import the user blueprint
-from flask_mail import Mail
 from config import Config
+from flask_mail import Mail
 
 # Load environment variables
 load_dotenv()
-mail = Mail()
+
+
 # Initialize the Flask application
 app = Flask(__name__)
 csrf = CSRFProtect(app)
+mail = Mail(app)  # Initialize Flask-Mail
 # Configuracion B
 app.config.from_object(Config)
-
-
 # Initialize the database and login manager
 db.init_app(app)
 migrate = Migrate(app, db)
-mail.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'user.login'  # Update to use the blueprint
 

@@ -7,6 +7,10 @@ from . import user_bp  # Importa el blueprint de el modelo User
 import random
 import string
 from datetime import datetime
+from flask_mail import Mail, Message
+
+# Initialize the Mail object
+mail = Mail()
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -24,9 +28,13 @@ def register():
             return redirect(url_for('user.register'))
         confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(username=username, email=email, password=hashed_password,confirmation_code=confirmation_code, confirmation_time=datetime.now())
+        new_user = User(username=username, email=email, password=hashed_password, confirmation_code=confirmation_code, confirmation_time=datetime.now())
         db.session.add(new_user)
         db.session.commit()
+          # Send confirmation code via email
+        msg = Message('Código de Confirmación', recipients=[new_user.email])
+        msg.body = f'Tu código de confirmación es: {new_user.confirmation_code}'
+        mail.send(msg)
         flash('Usuario Creado!')
         return redirect(url_for('user.login'))
     except Exception as e:

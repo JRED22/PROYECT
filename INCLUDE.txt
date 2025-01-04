@@ -13,4 +13,6 @@ pip install Flask-Migrate
 pip install --upgrade werkzeug
 pip install python-dotenv
 pip install Flask-Mail
+pip install  Flask-WTF
+
 
