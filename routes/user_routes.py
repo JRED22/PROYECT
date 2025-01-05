@@ -9,8 +9,10 @@ import string
 from datetime import datetime
 from flask_mail import Mail, Message
 
+
 # Initialize the Mail object
 mail = Mail()
+
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -31,11 +33,16 @@ def register():
         new_user = User(username=username, email=email, password=hashed_password, confirmation_code=confirmation_code, confirmation_time=datetime.now())
         db.session.add(new_user)
         db.session.commit()
-          # Send confirmation code via email
-        msg = Message('Código de Confirmación', recipients=[new_user.email])
-        msg.body = f'Tu código de confirmación es: {new_user.confirmation_code}'
-        mail.send(msg)
-        flash('Usuario Creado!')
+         # Send confirmation code via email
+       # Enviar el código de confirmación por correo electrónico
+        msg = Message('Código de Confirmación', recipients=[email])
+        msg.body = f'Tu código de confirmación es: {confirmation_code}'
+        try:
+          mail.send(msg)
+          flash('Correo enviado exitosamente!')
+        except Exception as e:
+          flash(f'Error al enviar el correo: {e}')
+        #flash('Usuario Creado , verifique su correo!')   
         return redirect(url_for('user.login'))
     except Exception as e:
             db.session.rollback()  # Deshacer la sesión en caso de error
