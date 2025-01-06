@@ -28,21 +28,7 @@ def load_user(user_id):
 # Register the user routes blueprint
 app.register_blueprint(user_bp)
 
-@app.route('/sendmail')
-def send_email():
-    # Especificar el remitente en el mensaje
-    msg = Message(subject='¡Hola desde Flask!',
-                  sender='MS_U3yUIf@trial-pq3enl6om1ml2vwr.mlsender.net',  # Especifica el remitente aquí
-                  recipients=['alt.h4-boa6mi0e@yopmail.com'])  # Especifica el destinatario aquíS
-    msg.body = "Este es un correo de prueba enviado desde una aplicación Flask."
 
-    try:
-        mail.send(msg)
-        return 'Correo enviado!'
-    except Exception as e:
-        return f'Error al enviar el correo: {e}'
-
-      
 @app.route('/')
 def home():
     return render_template('home.html', user=current_user)

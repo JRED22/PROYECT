@@ -20,31 +20,30 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-    try:
-        if User.query.filter_by(email=email).first():
-            flash('Correo Ya Existe.')
-            return redirect(url_for('user.register'))
-        
-        if User.query.filter_by(username=username).first():
-            flash('Usuario ya Existe .')
-            return redirect(url_for('user.register'))
-        confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(username=username, email=email, password=hashed_password, confirmation_code=confirmation_code, confirmation_time=datetime.now())
-        db.session.add(new_user)
-        db.session.commit()
-         # Send confirmation code via email
-       # Enviar el código de confirmación por correo electrónico
-        msg = Message('Código de Confirmación', recipients=[email])
-        msg.body = f'Tu código de confirmación es: {confirmation_code}'
         try:
-          mail.send(msg)
-          flash('Correo enviado exitosamente!')
+            if User.query.filter_by(email=email).first():
+             flash('Correo Ya Existe.')
+             return redirect(url_for('user.register'))
+        
+            if User.query.filter_by(username=username).first():
+             flash('Usuario ya Existe .')
+             return redirect(url_for('user.register'))
+            confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+            new_user = User(username=username, email=email, password=hashed_password, confirmation_code=confirmation_code, confirmation_time=datetime.now())
+            db.session.add(new_user)
+            db.session.commit()
+            # Enviar el código de confirmación por correo electrónico
+            msg = Message('Código de Confirmación', recipients=[email])
+            msg.body = f'Tu código de confirmación es: {confirmation_code}'
+            try:
+                mail.send(msg)
+                flash('Correo enviado exitosamente!')
+            except Exception as e:
+             flash(f'Error al enviar el correo: {e}')
+        
+            return redirect(url_for('user.login'))
         except Exception as e:
-          flash(f'Error al enviar el correo: {e}')
-        #flash('Usuario Creado , verifique su correo!')   
-        return redirect(url_for('user.login'))
-    except Exception as e:
             db.session.rollback()  # Deshacer la sesión en caso de error
             flash('Ocurrió un error al crear el usuario. Inténtalo de nuevo.')
             print(f'Error: {e}')  # Imprimir el error en la consola para depuración
@@ -53,23 +52,22 @@ def register():
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-    try:
-        user = User.query.filter_by(email=email).first()
-
-        if not user or not check_password_hash(user.password, password):
+        try:
+        
+           user = User.query.filter_by(email=email).first()
+           if not user or not check_password_hash(user.password, password):
             flash('Correo o password invalido.')
             return redirect(url_for('user.login'))
+           login_user(user)
+           return redirect(url_for('user.dashboard'))
+        except Exception as e:
+         flash('Ocurrió un error al intentar iniciar sesión. Inténtalo de nuevo.')
 
-        login_user(user)
-        #flash('Logged in successfully!')
-        return redirect(url_for('user.dashboard'))
-    except Exception as e:
-       flash('Ocurrió un error al intentar iniciar sesión. Inténtalo de nuevo.')
-       print(f'Error: {e}')  # Imprimir el error en la consola para depuración 
-       return render_template('auth/login.html')
+    return render_template('auth/login.html')
 
 @user_bp.route('/logout')
 @login_required
