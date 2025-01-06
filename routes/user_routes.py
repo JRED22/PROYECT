@@ -34,9 +34,13 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             # Enviar el código de confirmación por correo electrónico
-            msg = Message('Código de Confirmación', recipients=[email])
-            msg.body = f'Tu código de confirmación es: {confirmation_code}'
+            
             try:
+                msg = Message(subject='¡Hola desde Flask!',
+                sender='MS_nhRWXj@trial-pq3enl6om1ml2vwr.mlsender.net',
+                recipients=[email])  # Cambia esto por el destinatario
+                # Cargar el contenido HTML desde el archiv
+                msg.html = render_template('auth/email.html', code=confirmation_code)
                 mail.send(msg)
                 flash('Correo enviado exitosamente!')
             except Exception as e:
