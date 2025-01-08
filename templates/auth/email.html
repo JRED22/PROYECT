@@ -1,39 +1,127 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantilla de Correo Electrónico</title>
-   
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>¡Bienvenido a Nuestro Servicio!</h1>
-        </div>
-        <div class="content">
-            <h2>Hola, [Nombre del Usuario]</h2>
-            <p>Gracias por registrarte en nuestro servicio. Estamos emocionados de tenerte con nosotros. Aquí hay algunas cosas que puedes hacer:</p>
-            Su Codigo de Confirmacion es: <strong>{{code}}</strong>
-            <ul>
-                <li>Explorar nuestras características.</li>
-                <li>Personalizar tu perfil.</li>
-                <li>Conectar con otros usuarios.</li>
-            </ul>
-            <p>Para comenzar, haz clic en el botón de abajo:</p>
-            <a href="[Enlace de Acción]" class="button">Comenzar Ahora</a>
-        </div>
-        <div class="footer">
-            <p>&copy; 2025 Tu Empresa. Todos los derechos reservados.</p>
-            <p><a href="[Enlace de Desuscripción]" style="color: #007BFF;">Desuscribirse</a></p>
-        </div>
-    </div>
-    <h1 style="color: #333;">Hola,</h1>
-    <p style="font-size: 16px; color: #555;">
-        Este es un ejemplo de correo electrónico con estilos en línea.
-    </p>
-    <a href="https://example.com" style="background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none;">
-        Visita nuestro sitio
-    </a>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+      <tbody>
+        <tr>
+          <td style="padding-right: 20px">
+            <table
+              width="100%"
+              cellspacing="0"
+              cellpadding="0"
+              border="0"
+              align="left"
+              style="
+                padding-bottom: 10px;
+                border: none;
+                border-left: 0px;
+                border-right: 0px;
+              "
+            >
+              <tbody>
+                <tr>
+                  <td align="center">
+                    <a href="">
+                      <img
+                        border="0"
+                        width="150px"
+                        style="
+                          border: none;
+                          border-left: 0px;
+                          border-right: 0px;
+                        "
+                        alt="logo Jred"
+                        src="#"
+                        class="CToWUd"
+                        data-bit="iit"
+                      />
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table
+              width="100%"
+              cellspacing="0"
+              cellpadding="0"
+              border="0"
+              bgcolor="#ffffff"
+              align="left"
+              style="padding-bottom: 0; margin-bottom: 0"
+            >
+              <tbody>
+                <tr>
+                  <td align="left">
+                    <br />
+                    <p>Hola, <strong>{{ nombre_user}}</strong>.</p>
+
+                    <p>
+                      Necesitamos tu confirmación para poder darte acceso a la
+                      plataforma.
+                    </p>
+                    <p>
+                      Retorna a la plataforma e ingresa el código inscrito aquí
+                      debajo:
+                    </p>
+                    <div
+                      style="
+                        background: #d9edf7;
+                        border: 1px solid #bce8f1;
+                        color: #0eb3f5;
+                        text-align: center;
+                        font-size: 42px;
+                        padding: 20px;
+                      "
+                    >
+                      <strong>{{ code }}</strong>
+                    </div>
+                    <br />
+
+                    <br />
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <a
+                      class="boton"
+                      style="
+                    
+                        display: inline-block;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        color: white;
+                        background-color: #028343; 
+                        text-decoration:inline-block;
+                        border-radius: 5px; 
+                        "
+                      href="{{ confirm_url}}">link de Confirmacion:</a
+                    >
+                    <br />
+
+                    <br />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Muchas gracias,</strong><br />
+                    <strong>Equipo Jhon Rojo</strong>.<br /><br />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,url_for,flash,redirect
 from flask_login import  current_user
 from dotenv import load_dotenv
 from flask_wtf.csrf import CSRFProtect
@@ -8,7 +8,9 @@ from models.user import User
 from flask_login import LoginManager
 from routes import user_bp  # Import the user blueprint
 from config import Config
-from flask_mail import Mail, Message
+from flask_mail import Mail
+from itsdangerous import URLSafeTimedSerializer
+from flask import current_app
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -29,9 +31,13 @@ def load_user(user_id):
 app.register_blueprint(user_bp)
 
 
+def get_current_user():
+    return current_user if current_user.is_authenticated else None
+
 @app.route('/')
 def home():
-    return render_template('home.html', user=current_user)
+    user = get_current_user()  # Función que obtiene el usuario actual
+    return render_template('home.html',user=user)
 
 if __name__ == '__main__':
     with app.app_context():

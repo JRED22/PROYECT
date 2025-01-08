@@ -14,5 +14,5 @@ pip install --upgrade werkzeug
 pip install python-dotenv
 pip install Flask-Mail
 pip install  Flask-WTF
-
+pip install itsdangerous
 

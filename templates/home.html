@@ -12,7 +12,7 @@
     {% block body %}
     <h1>Bienvenido a esta app flask </h1>
     {% if user.is_authenticated %}
-        <p>Hello, {{ user.username }}!</p>
+        <p>Hello, {{ user.username }}!</p> 
         <a  class="btn btn-secondary" href="{{ url_for('user.dashboard') }}">Go to Dashboard</a>
         <a  class="btn btn-secondary" href="{{ url_for('user.logout') }}">Logout</a>
     {% else %}

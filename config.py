@@ -2,9 +2,6 @@ import os
 
 class Config:
     # Configuración de la aplicación
-    print (os.getenv('MAIL_SERVER'))
-    print (os.getenv('MAIL_USERNAME'))
-    print (os.getenv('MAIL_PASSWORD'))
     MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = int(os.getenv('MAIL_PORT', 587))  # Valor por defecto 587
     MAIL_USE_TLS = os.getenv('MAIL_USE_TLS') == 'True'  # Convertir a booleano
