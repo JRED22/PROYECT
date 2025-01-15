@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for, request, flash
+from wtforms.validators import ValidationError
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db
@@ -10,7 +11,7 @@ from datetime import datetime
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from flask import current_app
-
+from forms import RegistrationForm
 
 # Initialize the Mail object
 mail = Mail()
@@ -18,30 +19,19 @@ mail = Mail()
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        try:
-            if User.query.filter_by(email=email).first():
-                flash('Correo Ya Existe.')
-                return redirect(url_for('user.register'))
-
-            if User.query.filter_by(username=username).first():
-                flash('Usuario ya Existe .')
-                return redirect(url_for('user.register'))
-            confirmation_code = ''.join(random.choices(
-                string.ascii_uppercase + string.digits, k=6))
-            hashed_password = generate_password_hash(
-                password, method='pbkdf2:sha256')
-            new_user = User(username=username, email=email, password=hashed_password,
-                            confirmation_code=confirmation_code, confirmation_time=datetime.now())
-            db.session.add(new_user)
-            db.session.commit()
-            # Enviar el código de confirmación por correo electrónico
-            # Supón que aquí manejas el formulario y la creación del usuario
-    # Lógica para enviar el correo aquí
-            try:
+    form = RegistrationForm()
+    if form.validate_on_submit():
+     try:
+           email = form.email.data
+           password = form.password.data
+           username = form.username.data
+           confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+           hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+           new_user = User(username=username, email=email, password=hashed_password,confirmation_code=confirmation_code, confirmation_time=datetime.now())
+           db.session.add(new_user)
+           db.session.commit()
+           # Lógica para enviar el correo aquí
+           try:
                 token = encode_token(email)
                 # busca el metodo confirm_email -external=Truegenera una url_compleja (http o https)
                 confirm_url = url_for(
@@ -54,17 +44,19 @@ def register():
                 msg.html = render_template(
                     'auth/email.html', code=confirmation_code, nombre_user=username, token=token, confirm_url=confirm_url)
                 mail.send(msg)
-                flash('Correo enviado exitosamente!')
-            except Exception as e:
+                flash('Registro Exitoso!')
+                return redirect(url_for('user.login'))
+           except Exception as e:
                 flash(f'Error al enviar el correo: {e}')
-
-            return redirect(url_for('user.login'))
-        except Exception as e:
+                return redirect(url_for('user.login'))
+     except Exception as e:
             db.session.rollback()  # Deshacer la sesión en caso de error
             flash('Ocurrió un error al crear el usuario. Inténtalo de nuevo.')
             # Imprimir el error en la consola para depuración
-            print(f'Error: {e}')
-    return render_template('auth/register.html')
+            print(f'Error: {e}') 
+        
+    return render_template('auth/register.html', form=form)
+   
 
 
 @user_bp.route('/login', methods=['GET', 'POST'])
@@ -116,17 +108,19 @@ def decode_token(token, expiration=3600):
         return False
 @user_bp.route('/confirm/<token>')
 def confirm_email(token):
-    email = decode_token(token)#llama el metodo 
-    if not email:
-        flash('El enlace de confirmación es inválido o ha expirado.', 'danger')
-        return redirect(url_for('user.login'))
-    user = User.query.filter_by(email=email).first()
-    if user.is_confirmed :
-        flash('La cuenta ya ha sido confirmada.', 'success')
-        return redirect(url_for('user.login'))
-    user.is_confirmed = True
-    db.session.commit()
-    flash('Has confirmado tu cuenta. ¡Gracias!', 'success')
-    return redirect(url_for('user.login'))
-
-
+    try:
+            email = decode_token(token)  # llama el metodo
+            if not email:
+                flash('El enlace de confirmación es inválido o ha expirado.', 'danger')
+                return redirect(url_for('user.login'))
+            user = User.query.filter_by(email=email).first()
+            if user.is_confirmed:
+                flash('La cuenta ya ha sido confirmada.', 'success')
+                return redirect(url_for('user.login'))
+            user.is_confirmed = True
+            db.session.commit()
+            flash('Has confirmado tu cuenta. ¡Gracias!', 'success')
+    except Exception as e: 
+     flash('Ocurrió un error confirmar cuenta.')      
+     return redirect(url_for('user.login'))
+ 

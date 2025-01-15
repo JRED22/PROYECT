@@ -9,7 +9,6 @@ from flask_login import LoginManager
 from routes import user_bp  # Import the user blueprint
 from config import Config
 from flask_mail import Mail
-from itsdangerous import URLSafeTimedSerializer
 from flask import current_app
 
 # Initialize the Flask application

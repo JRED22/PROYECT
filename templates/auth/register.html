@@ -1,53 +1,54 @@
-     
 {% extends './base.html' %}
 
-{% block title %}Registro{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
 
-
-    {% block body %}
- <main class="form-signin w-100 m-auto mt-4">
-    <form class="form-signin"  method="POST">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><!-- Incluye el token CSRF -->
-        <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="200" height="100">     
-        {% with messages = get_flashed_messages() %}
-    
-        {% if messages %}
-        <br />
-        {% for message in messages %}
-        <div class="alert alert-primary alert-dismissible" role="alert">
-            <strong>{{ message }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+{% block body %}
+<main class="form-signin w-100 m-auto mt-4">
+  
+  <form method="POST" class="form-signin">
+    <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="200" height="100">   
+    <h1 class="h3 mb-3 fw-normal">Registrate </h1>
+    {{ form.hidden_tag() }}
+    <!-- Para CSRF -->
+    <div class="form-floating">
+        {{ form.username.label }}
+        {{ form.username(size=32,class="form-control form-control-sm username" ) }}
+        {% for error in form.username.errors %}
+        <span style="color: red">{{ error }}</span>
         {% endfor %}
-        {% endif %}
-    
-        {% endwith %}
-        <h1 class="h3 mb-3 fw-normal">Ingesa </h1>
-        
-        <div class="form-floating">
-            <input type="text"class="form-control"  id="username" name="username"required placeholder="Digite Username">
-            <label for="username">Username:</label>
-        </div>
-        <div class="form-floating mt-2">
-            <input type="email"class="form-control" id="email" name="email" required placeholder="Digite Email">
-            <label for="email">Email:</label>
-            
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="password" name="password" required placeholder="Password">
-            <label for="password">Password</label>
-        </div>
-        <button class="w-100 btn btn-Small btn-primary" type="submit">Registrate</button>
-    </form>
-        <div class="form-floating">
-          <a href="{{ url_for('user.login') }}">Already have an account? Login here</a>
-       </div>
+      </div>
+    <div class="form-floating">
+      {{ form.email.label }}
+      {{ form.email(size=32,class="form-control form-control-sm email" ) }}
+      {% for error in form.email.errors %}
+      <span style="color: red">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-floating">
+      {{ form.password.label }}
+      {{ form.password(size=32,class="form-control form-control-sm password") }}
+      {% for error in form.password.errors %}
+      <span style="color: red">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-floating">
+      {{ form.confirm_password.label }}
+      {{ form.confirm_password(size=32,class="form-control form-control-sm password") }}
+      {% for error in form.confirm_password.errors %}
+      <span style="color: red">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div>{{ form.submit(class="w-100 btn btn-lg btn-primary") }}</div>
+  </form>
+
+  <div class="form-floating">
+    <a href="{{ url_for('user.login') }}"
+      >Already have an account? Login here</a
+    >
+  </div>
 </main>
-     {% endblock %}
-
-
-     
+{% endblock %}
