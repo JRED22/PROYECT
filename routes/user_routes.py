@@ -11,20 +11,20 @@ from datetime import datetime
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from flask import current_app
-from forms import RegistrationForm
+from forms import RegistrationForm,LoginForm
 
 # Initialize the Mail object
 mail = Mail()
 
 
-@user_bp.route('/register', methods=['GET', 'POST'])
-def register():
+@user_bp.route('/registro', methods=['GET', 'POST'])
+def registro():
     form = RegistrationForm()
     if form.validate_on_submit():
      try:
            email = form.email.data
            password = form.password.data
-           username = form.username.data
+           username = form.usuario.data
            confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
            new_user = User(username=username, email=email, password=hashed_password,confirmation_code=confirmation_code, confirmation_time=datetime.now())
@@ -55,32 +55,16 @@ def register():
             # Imprimir el error en la consola para depuración
             print(f'Error: {e}') 
         
-    return render_template('auth/register.html', form=form)
+    return render_template('auth/registro.html', form=form)
    
 
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
-
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        try:
-
-            user = User.query.filter_by(email=email).first()
-            if not user.is_confirmed :
-             flash('Por favor, confirma tu cuenta antes de iniciar sesión.')
-             return redirect(url_for('user.login'))
-            if not user or not check_password_hash(user.password, password):
-                flash('Correo o password invalido.')
-                return redirect(url_for('user.login'))
-            login_user(user)
-            return redirect(url_for('user.dashboard'))
-        except Exception as e:
-            flash('Ocurrió un error al intentar iniciar sesión. Inténtalo de nuevo.')
-
-    return render_template('auth/login.html')
-
+    form = LoginForm()
+    
+    return render_template('auth/login.html',form=form)
+            
 @user_bp.route('/logout')
 @login_required
 def logout():

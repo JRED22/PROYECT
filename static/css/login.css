@@ -8,8 +8,15 @@ body {
   padding: 1rem;
 }
 
-.form-signin .form-floating:focus-within {
+.form-signin  label{
+  font-size: 1rem;
+  text-align: center;
+ 
+}
+
+ .form-signin .form-floating:focus-within { /*cuando gana el foco lo manda a un lado */
   z-index: 2;
+  color: blue;
 }
 
 .form-signin .email {
