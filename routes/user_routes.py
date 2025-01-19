@@ -24,7 +24,7 @@ def registro():
      try:
            email = form.email.data
            password = form.password.data
-           username = form.usuario.data
+           username = form.username.data
            confirmation_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
            new_user = User(username=username, email=email, password=hashed_password,confirmation_code=confirmation_code, confirmation_time=datetime.now())
@@ -34,8 +34,7 @@ def registro():
            try:
                 token = encode_token(email)
                 # busca el metodo confirm_email -external=Truegenera una url_compleja (http o https)
-                confirm_url = url_for(
-                    'user.confirm_email', token=token, _external=True)
+                confirm_url = url_for('user.confirm_email', token=token, _external=True)
                 msg = Message(subject='¡Hola desde Flask!',
                               sender='MS_nhRWXj@trial-pq3enl6om1ml2vwr.mlsender.net',
                               # Cambia esto por el destinatario
@@ -54,7 +53,7 @@ def registro():
             flash('Ocurrió un error al crear el usuario. Inténtalo de nuevo.')
             # Imprimir el error en la consola para depuración
             print(f'Error: {e}') 
-        
+    
     return render_template('auth/registro.html', form=form)
    
 
@@ -62,9 +61,17 @@ def registro():
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    
-    return render_template('auth/login.html',form=form)
-            
+    email = form.email.data
+    password = form.password.data
+    if form.validate_on_submit():
+        try:
+            user = User.query.filter_by(email=email).first()
+            login_user(user)
+            return redirect(url_for('user.dashboard'))
+        except Exception as e:
+            flash('Ocurrió un error al intentar iniciar sesión. Inténtalo de nuevo.')
+    else:
+     return render_template('auth/login.html', form=form)     
 @user_bp.route('/logout')
 @login_required
 def logout():
@@ -104,6 +111,8 @@ def confirm_email(token):
             user.is_confirmed = True
             db.session.commit()
             flash('Has confirmado tu cuenta. ¡Gracias!', 'success')
+            return redirect(url_for('user.login'))  # Asegúrate de devolver algo aquí
+
     except Exception as e: 
      flash('Ocurrió un error confirmar cuenta.')      
      return redirect(url_for('user.login'))
