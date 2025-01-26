@@ -11,3 +11,6 @@ class User(db.Model, UserMixin):
     is_confirmed = db.Column(db.Boolean, default=False)
     confirmation_time = db.Column(db.DateTime, nullable=True)  # Para almacenar el tiempo de confirmación
     
+def __repr__(self):
+        return f'<User {self.email}>'  # Devuelve el email del usuario al imprimir el objeto
+    

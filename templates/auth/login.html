@@ -33,10 +33,13 @@
           {% endfor %}
         </div>
         <div>{{ form.submit(class="w-100 btn btn-lg btn-primary") }}</div>
+        
       </form>
    
       <div class="form-floating">No estas Registrado? 
         <a href="{{ url_for('user.registro') }}">Registrate Aqui.</a>
+        <a href="{{ url_for('user.reset_password_request') }}">Olvidaste Contraeña?.</a>
+        
       </div>
 </main>
      {% endblock %}

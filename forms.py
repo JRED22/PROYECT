@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationE
 from models.user import User  # Import the User model
 from werkzeug.security import check_password_hash  
 
-
+################################VALIDACION REGISTRO #################################################################
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(message='Este campo es obligatorio.'),Length(min=3, max=40, message='El nombre de usuario debe tener entre 3 y 25 caracteres.')]
                            ,render_kw={"class": "form-control form-control-sm username","placeholder": " "})
@@ -36,6 +36,8 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('La contraseña debe contener al menos un número.')
         if not any(char.isalpha() for char in password.data):
             raise ValidationError('La contraseña debe contener al menos una letra.')
+        
+################################Validacion del formulario Login #################################################################
 class LoginForm(FlaskForm):
       email = EmailField('Email',validators=[DataRequired(message='Correo is required.'),
                                Length(min=3, max=50, message='Email Requerido')
@@ -53,12 +55,25 @@ class LoginForm(FlaskForm):
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'      
         if not re.match(email_regex, email):
             raise ValidationError('Caracteres Invalidos.')
+        if user:
+           if not user.is_confirmed:
+              raise ValidationError('Por favor confirma tu correo electrónico.')
+           
       def validate_password(self, field):
         password = field.data
         email = self.email.data
         user = User.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password, password):
             raise ValidationError('La contraseña es incorrecta.')
-        else:
-           return True
-       
+        return user
+
+###############################################RESET###################################################################
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email',validators=[DataRequired(message='Por favor, ingrese su correo electrónico.'),
+                            Email(message='Por favor, ingrese un correo electrónico válido.')])
+    submit = SubmitField('Enviar solicitud de restablecimiento')
+    
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Nueva Contraseña',validators=[DataRequired(message='Por favor, ingrese su nueva contraseña.')])
+    confirm_password = PasswordField('Confirmar Nueva Contraseña',validators=[DataRequired(message='Por favor, confirme su nueva contraseña.')])
+    submit = SubmitField('Restablecer contraseña')
