@@ -5,10 +5,17 @@
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
-    <h1>Dashboard</h1>
-  
-    {% block body %}
-    <h1>Dashboard</h1>
-    <p>Welcome, {{ user.username }}!</p>
-    <a  class="btn btn-secondary" href="{{ url_for('user.logout') }}">Logout</a>
-{% endblock %}
+
+ 
+     {% block body %}
+    <h1>Bienvenido DASHBOARD </h1>
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}!</p> 
+        <a  class="btn btn-secondary" href="{{ url_for('home') }}">Go to home</a>
+        <a  class="btn btn-secondary" href="{{ url_for('user.logout') }}">Logout</a>
+    {% else %}
+        <a  class="btn btn-secondary" href="{{ url_for('user.login') }}">Login</a>
+        <a  class="btn btn-secondary" href="{{ url_for('user.registro') }}">Register</a>
+    {% endif %}
+    
+    {% endblock %}

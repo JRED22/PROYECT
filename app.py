@@ -19,9 +19,17 @@ csrf = CSRFProtect(app)
 # Initialize the database and login manager
 db.init_app(app)
 migrate = Migrate(app, db)
-login_manager = LoginManager(app)
-login_manager.login_view = 'user.login'  # Update to use the blueprint
-
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'user.login'  # Redirige a la vista de login si no está autenticado
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 #desactiva archivos estaticos para no almacenar kche
+@app.after_request
+def add_header(response):
+    response.cache_control.no_cache = True
+    response.cache_control.no_store = True
+    response.cache_control.must_revalidate = True
+    response.expires = 0
+    return response
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

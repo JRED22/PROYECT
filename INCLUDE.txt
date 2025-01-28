@@ -16,5 +16,6 @@ pip install Flask-Mail
 pip install  Flask-WTF
 pip install itsdangerous
 pip install email-validator
+pip install bcrypt
 
 

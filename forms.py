@@ -59,21 +59,25 @@ class LoginForm(FlaskForm):
            if not user.is_confirmed:
               raise ValidationError('Por favor confirma tu correo electrónico.')
            
-      def validate_password(self, field):
-        password = field.data
-        email = self.email.data
-        user = User.query.filter_by(email=email).first()
-        if not user or not check_password_hash(user.password, password):
-            raise ValidationError('La contraseña es incorrecta.')
-        return user
-
 ###############################################RESET###################################################################
 class ResetPasswordRequestForm(FlaskForm):
-    email = StringField('Email',validators=[DataRequired(message='Por favor, ingrese su correo electrónico.'),
-                            Email(message='Por favor, ingrese un correo electrónico válido.')])
-    submit = SubmitField('Enviar solicitud de restablecimiento')
+    email = EmailField('Email',validators=[DataRequired(message='Correo is required.'),
+                               Length(min=3, max=50, message='Email Requerido')
+                               ,Email(message='Por favor, ingrese un correo electrónico válido.'),],
+                           render_kw={"class": "form-control form-control-sm email", "placeholder": "Digite su Email"})
+    submit = SubmitField('Enviar Correo')
     
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Nueva Contraseña',validators=[DataRequired(message='Por favor, ingrese su nueva contraseña.')])
-    confirm_password = PasswordField('Confirmar Nueva Contraseña',validators=[DataRequired(message='Por favor, confirme su nueva contraseña.')])
-    submit = SubmitField('Restablecer contraseña')
+    password = PasswordField('Contraseña', validators=[DataRequired(), Length(min=6, max=20)]
+                       ,render_kw={"class": "form-control form-control-sm password","placeholder": " "})
+    confirm_password = PasswordField('Confirmar Contraseña', validators=[DataRequired(), EqualTo('password', message='Las contraseñas deben coincidir.')]
+                                     ,render_kw={"class": "form-control form-control-sm password","placeholder": " "})
+    submit = SubmitField('Restablecer ')
+    def validate_password(self, password):
+        # Validación personalizada para verificar la fortaleza de la contraseña
+        if len(password.data) < 8:
+            raise ValidationError('La contraseña debe tener al menos 8 caracteres.')
+        if not any(char.isdigit() for char in password.data):
+            raise ValidationError('La contraseña debe contener al menos un número.')
+        if not any(char.isalpha() for char in password.data):
+            raise ValidationError('La contraseña debe contener al menos una letra.')
